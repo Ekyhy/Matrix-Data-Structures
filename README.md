@@ -5,9 +5,9 @@ Struktur data matrix merupakan struktur data 2D yang menyimpan data dalam bentuk
 Program ini di buat untuk  mengimpelemtasikan operasi dasar yang dapat dilakukan pasa struktur data matrix
 
 ## Fitur Program
-============================================================
-            MENU OPERASI MATRIKS
-============================================================
+===================== <br>
+ MENU OPERASI MATRIKS<br>
+===================== <br>
 1.  Sort Row-wise
 2.  Sort Column-wise
 3.  Rotate Clockwise (Layer by Layer)
