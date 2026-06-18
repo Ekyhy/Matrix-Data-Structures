@@ -9,14 +9,14 @@ def load_module(filename):
     spec.loader.exec_module(module)
     return module
 
-mod_1a = load_module('1a.py')
-mod_1b = load_module('1b.py')
-mod_2a = load_module('2a.py')
-mod_2b = load_module('2b.py')
-mod_2c = load_module('2c.py')
-mod_2d = load_module('2d.py')
-mod_3a = load_module('3a.py')
-mod_3b = load_module('3b.py')
+mod_1a = load_module('sortRows.py')
+mod_1b = load_module('sortCol.py')
+mod_2a = load_module('rotateMatrixClockwise.py')
+mod_2b = load_module('rotateMatrix.py')
+mod_2c = load_module('rotateMatrix90.py')
+mod_2d = load_module('rotateMatriks180.py')
+mod_3a = load_module('row_major.py')
+mod_3b = load_module('col_major.py')
 mod_transpose = load_module('trnspose.py')
 mod_spiral = load_module('sprial.py')
 
@@ -53,12 +53,43 @@ def print_matrix(mat, title="Hasil:"):
         print('  [' + ', '.join(map(str, row)) + ']')
     print(']')
 
+def deep_copy_matrix(mat):
+    """Helper untuk membuat copy matriks"""
+    return [row[:] for row in mat]
+
 def menu():
-    """Menu utama CLI"""
+    """Menu utama CLI dengan penyimpanan hasil operasi"""
+    print("\n" + "="*60)
+    print("         SELAMAT DATANG DI PROGRAM OPERASI MATRIKS")
+    print("="*60)
+    
+    # Input ordo matriks di awal
     while True:
-        print("\n" + "="*50)
-        print("       PROGRAM OPERASI MATRIKS")
-        print("="*50)
+        try:
+            n = int(input("\nMasukkan ordo matriks (n x n): "))
+            if n <= 0:
+                print("Ordo harus lebih besar dari 0!")
+                continue
+            break
+        except ValueError:
+            print("Input tidak valid! Masukkan angka.")
+    
+    # Input nilai matriks di awal
+    print(f"\nMasukkan {n*n} elemen matriks (dipisah dengan spasi):")
+    print("Contoh untuk matriks 2x2: 1 2 3 4")
+    mat = input_matrix(n)
+    
+    # Tampilkan matriks awal
+    print_matrix(mat, "Matriks Awal:")
+    
+    history = [deep_copy_matrix(mat)]
+    operation_count = 0
+    
+    # Menu loop utama
+    while True:
+        print("\n" + "="*60)
+        print("            MENU OPERASI MATRIKS")
+        print("="*60)
         print("1.  Sort Row-wise")
         print("2.  Sort Column-wise")
         print("3.  Rotate Clockwise (Layer by Layer)")
@@ -69,64 +100,108 @@ def menu():
         print("8.  Column-wise Traversal")
         print("9.  Spiral Traversal")
         print("10. Transpose")
-        print("11. Exit")
-        print("="*50)
+        print("11. Reset ke Matriks Awal")
+        print("12. Lihat Riwayat Operasi")
+        print("13. Exit")
+        print("="*60)
         
-        choice = input("Pilih menu (1-11): ")
+        choice = input("Pilih menu (1-13): ")
         
-        if choice == '11':
-            print("Terima kasih! Program selesai.")
+        if choice == '13':
+            print("\nTerima kasih telah menggunakan program ini!")
+            print(f"Total operasi yang dilakukan: {operation_count}")
             break
         
-        if choice not in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']:
-            print("Input tidak valid!")
+        if choice == '11':
+            mat = deep_copy_matrix(history[0])
+            print_matrix(mat, "Matriks direset ke kondisi awal:")
+            operation_count = 0
+            history = [deep_copy_matrix(mat)]
             continue
         
-        n = int(input("Masukkan ordo matriks (n x n): "))
-        mat = input_matrix(n)
+        if choice == '12':
+            print(f"\nTotal operasi yang telah dilakukan: {operation_count}")
+            print(f"Matriks saat ini: {len(history)} state tersimpan")
+            print_matrix(mat, "Matriks Saat Ini:")
+            continue
         
-        print("\nMatriks awal:")
-        print_matrix(mat, "")
+        if choice not in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']:
+            print("Input tidak valid! Silakan pilih menu 1-13.")
+            continue
         
-        if choice == '1':
-            sortRows(mat, n)
-            print_matrix(mat, "Hasil Sort Row-wise:")
+        # Buat copy untuk hasil operasi
+        result_mat = deep_copy_matrix(mat)
+        operation_name = ""
+        show_result = True
+        
+        try:
+            if choice == '1':
+                sortRows(result_mat, n)
+                operation_name = "Sort Row-wise"
+                print_matrix(result_mat, f"Hasil {operation_name}:")
+                
+            elif choice == '2':
+                sortCol(result_mat, n)
+                operation_name = "Sort Column-wise"
+                print_matrix(result_mat, f"Hasil {operation_name}:")
+                
+            elif choice == '3':
+                rotateMatrixClockwise(result_mat, n)
+                operation_name = "Rotate Clockwise"
+                print_matrix(result_mat, f"Hasil {operation_name}:")
+                
+            elif choice == '4':
+                rotateMatrix(result_mat, n)
+                operation_name = "Rotate Counter-Clockwise"
+                print_matrix(result_mat, f"Hasil {operation_name}:")
+                
+            elif choice == '5':
+                rotateMatrix90(result_mat)
+                operation_name = "Rotate 90 Degrees"
+                print_matrix(result_mat, f"Hasil {operation_name}:")
+                
+            elif choice == '6':
+                rotateMatriks180(result_mat, n)
+                operation_name = "Rotate 180 Degrees"
+                print_matrix(result_mat, f"Hasil {operation_name}:")
+                
+            elif choice == '7':
+                operation_name = "Row-wise Traversal"
+                print(f"\nHasil {operation_name}:")
+                row_major(result_mat)
+                show_result = False
+                
+            elif choice == '8':
+                operation_name = "Column-wise Traversal"
+                print(f"\nHasil {operation_name}:")
+                col_major(result_mat)
+                show_result = False
+                
+            elif choice == '9':
+                operation_name = "Spiral Traversal"
+                result = spirallyTraverse(result_mat)
+                print(f"\nHasil {operation_name}:")
+                print(result)
+                show_result = False
+                
+            elif choice == '10':
+                transpose(result_mat)
+                operation_name = "Transpose"
+                print_matrix(result_mat, f"Hasil {operation_name}:")
             
-        elif choice == '2':
-            sortCol(mat, n)
+            # Simpan hasil jika operasi mengubah matriks
+            if show_result:
+                ask_save = input("\nSimpan hasil operasi ini? (y/n): ").lower()
+                if ask_save == 'y':
+                    mat = result_mat
+                    history.append(deep_copy_matrix(mat))
+                    operation_count += 1
+                    print(f"✓ Hasil {operation_name} disimpan. Matriks diperbarui.")
+                else:
+                    print("Hasil operasi tidak disimpan.")
             
-        elif choice == '3':
-            rotateMatrixClockwise(mat, n)
-            print_matrix(mat, "Hasil Rotate Clockwise:")
-            
-        elif choice == '4':
-            rotateMatrix(mat,n)
-            print_matrix(mat, "Hasil Rotate Counter-Clockwise:")
-            
-        elif choice == '5':
-            rotateMatrix90(mat)
-            print_matrix(mat, "Hasil Rotate 90 Degrees:")
-            
-        elif choice == '6':
-            rotateMatriks180(mat, n)
-            print_matrix(mat, "Hasil Rotate 180 Degrees:")
-            
-        elif choice == '7':
-            print("\nHasil Row-wise Traversal:")
-            row_major(mat)
-            
-        elif choice == '8':
-            print("\nHasil Column-wise Traversal:")
-            col_major(mat)
-            
-        elif choice == '9':
-            result = spirallyTraverse(mat)
-            print("\nHasil Spiral Traversal:")
-            print(result)
-            
-        elif choice == '10':
-            transpose(mat)
-            print_matrix(mat, "Hasil Transpose:")
+        except Exception as e:
+            print(f"Error pada operasi {operation_name}: {str(e)}")
 
 if __name__ == '__main__':
     menu()
